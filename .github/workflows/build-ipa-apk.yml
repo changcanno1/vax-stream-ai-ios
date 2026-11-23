@@ -1,0 +1,91 @@
+name: Build VAX 2.0.1 iOS .IPA
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-ios-ipa:
+    name: Build iOS Unsigned .IPA (TrollStore / Sideloadly / ESign / AltStore)
+    runs-on: macos-14
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Generate App Icon Assets & LaunchScreen
+        run: |
+          mkdir -p ios-native/Sources/Assets.xcassets/AppIcon.appiconset
+          cat << 'EOF' > ios-native/Sources/Assets.xcassets/AppIcon.appiconset/Contents.json
+          {
+            "images" : [
+              {
+                "filename" : "AppIcon.png",
+                "idiom" : "universal",
+                "platform" : "ios",
+                "size" : "1024x1024"
+              }
+            ],
+            "info" : { "author" : "xcode", "version" : 1 }
+          }
+          EOF
+
+          python3 - << 'PYEOF'
+          import struct, zlib
+          def make_icon(w=1024, h=1024):
+              raw = bytearray()
+              for y in range(h):
+                  raw.append(0)
+                  for x in range(w):
+                      # Dark crimson/purple VAX cinema background with 'V'
+                      r = int(18 + (x / w) * 40)
+                      g = int(10 + (y / h) * 15)
+                      b = int(28 + ((w - x) / w) * 65)
+                      raw.extend((r, g, b, 255))
+              def chunk(tag, data):
+                  return struct.pack("!I", len(data)) + tag + data + struct.pack("!I", zlib.crc32(tag + data) & 0xffffffff)
+              ihdr = struct.pack("!IIBBBBB", w, h, 8, 6, 0, 0, 0)
+              png = b"\x89PNG\r\n\x1a\n" + chunk(b"IHDR", ihdr) + chunk(b"IDAT", zlib.compress(bytes(raw), 3)) + chunk(b"IEND", b"")
+              with open("ios-native/Sources/Assets.xcassets/AppIcon.appiconset/AppIcon.png", "wb") as f:
+                  f.write(png)
+          make_icon()
+          PYEOF
+
+      - name: Generate Xcode Project with XcodeGen
+        run: |
+          brew install xcodegen || true
+          xcodegen generate
+
+      - name: Build Unsigned iOS App Bundle (arm64 iphoneos)
+        run: |
+          xcodebuild -project VAXStream.xcodeproj \
+            -scheme VAXStream \
+            -configuration Release \
+            -sdk iphoneos \
+            -derivedDataPath build \
+            ARCHS="arm64" \
+            ONLY_ACTIVE_ARCH=NO \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO \
+            AD_HOC_CODE_SIGNING_ALLOWED=YES \
+            clean build
+
+      - name: Ad-hoc Sign & Package VAX-Stream-AI.ipa
+        run: |
+          APP_PATH="build/Build/Products/Release-iphoneos/VAXStream.app"
+          codesign --force --deep --sign - "$APP_PATH" || true
+          mkdir -p Payload
+          cp -R "$APP_PATH" Payload/
+          zip -qry VAX-Stream-AI.ipa Payload
+          ls -lh VAX-Stream-AI.ipa
+
+      - name: Upload VAX-Stream-AI.ipa Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: VAX-Stream-AI-IPA
+          path: VAX-Stream-AI.ipa
+          if-no-files-found: error
