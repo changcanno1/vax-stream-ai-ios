@@ -1,0 +1,58 @@
+name: VAXStream
+options:
+  bundleIdPrefix: com.vaxteam
+  deploymentTarget:
+    iOS: "15.0"
+  xcodeVersion: "15.0"
+  generateEmptyDirectories: true
+
+targets:
+  VAXStream:
+    type: application
+    platform: iOS
+    deploymentTarget: "15.0"
+    sources:
+      - path: ios-native/Sources
+      - path: www
+        type: folder
+        buildPhase: resources
+    info:
+      path: ios-native/Info.plist
+      properties:
+        CFBundleDisplayName: "VAX"
+        CFBundleShortVersionString: "2.0.1"
+        CFBundleVersion: "101"
+        UILaunchScreen:
+          UIColorName: ""
+        UIRequiresFullScreen: true
+        UIStatusBarStyle: UIStatusBarStyleLightContent
+        UIViewControllerBasedStatusBarAppearance: true
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+          - UIInterfaceOrientationLandscapeLeft
+          - UIInterfaceOrientationLandscapeRight
+        UISupportedInterfaceOrientations~ipad:
+          - UIInterfaceOrientationPortrait
+          - UIInterfaceOrientationPortraitUpsideDown
+          - UIInterfaceOrientationLandscapeLeft
+          - UIInterfaceOrientationLandscapeRight
+        NSAppTransportSecurity:
+          NSAllowsArbitraryLoads: true
+          NSAllowsArbitraryLoadsInWebContent: true
+        UIBackgroundModes:
+          - audio
+        LSApplicationQueriesSchemes:
+          - vlc
+          - infuse
+          - vlc-x-callback
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.vaxteam.vaxstream
+        PRODUCT_NAME: VAXStream
+        SWIFT_VERSION: "5.9"
+        TARGETED_DEVICE_FAMILY: "1,2"
+        CODE_SIGN_IDENTITY: ""
+        CODE_SIGNING_REQUIRED: "NO"
+        CODE_SIGNING_ALLOWED: "NO"
+        AD_HOC_CODE_SIGNING_ALLOWED: "YES"
+        ENABLE_BITCODE: "NO"
