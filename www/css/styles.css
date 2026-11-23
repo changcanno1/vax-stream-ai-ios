@@ -1,0 +1,1777 @@
+/* =============================================================================
+   VAX 2.0.1 iOS DARK GLASSMORPHISM THEME (1:1 REPLICA OF 14 SCREENSHOTS)
+   ============================================================================= */
+
+:root {
+  --ios-black: #000000;
+  --ios-card: #141416;
+  --ios-card-elevated: #1c1c1f;
+  --ios-card-hover: #252529;
+  --ios-border: rgba(255, 255, 255, 0.08);
+  --ios-border-light: rgba(255, 255, 255, 0.14);
+  --ios-blue: #0a84ff;
+  --ios-steel-blue: #1e4b6e;
+  --ios-red: #ff453a;
+  --ios-green: #30d158;
+  --ios-amber: #ff9f0a;
+  --ios-purple: #bf5af2;
+  --text-white: #ffffff;
+  --text-gray: #8e8e93;
+  --text-light-gray: #aeaeb2;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+input, textarea {
+  user-select: text;
+}
+
+html, body {
+  width: 100%;
+  min-height: 100vh;
+  background-color: var(--ios-black);
+  color: var(--text-white);
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+  font-size: 15px;
+  line-height: 1.4;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+::-webkit-scrollbar {
+  width: 0px;
+  height: 0px;
+}
+
+/* =============================================================================
+   APP SHELL & VIEWS
+   ============================================================================= */
+.ios-app-shell {
+  max-width: 540px;
+  margin: 0 auto;
+  min-height: 100vh;
+  position: relative;
+  padding-bottom: calc(105px + var(--safe-bottom));
+  background: var(--ios-black);
+}
+
+@media (min-width: 768px) {
+  .ios-app-shell {
+    max-width: 1120px;
+  }
+}
+
+.ios-view {
+  display: none;
+  animation: fadeIn 0.2s ease;
+}
+
+.ios-view.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* =============================================================================
+   1. TRANG CHỦ (HOME VIEW - ẢNH 8)
+   ============================================================================= */
+.top-floating-bar {
+  position: absolute;
+  top: calc(18px + var(--safe-top));
+  left: 0;
+  right: 0;
+  z-index: 30;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.source-dropdown-pill {
+  pointer-events: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 18px;
+  border-radius: 999px;
+  background: rgba(45, 42, 38, 0.72);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45);
+  transition: transform 0.15s ease;
+}
+
+.source-dropdown-pill:active {
+  transform: scale(0.95);
+}
+
+.vax-hero {
+  position: relative;
+  width: 100%;
+  height: 520px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  overflow: hidden;
+  margin-bottom: 14px;
+}
+
+.vax-hero-bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center 15%;
+  transition: background-image 0.4s ease, transform 0.6s ease;
+}
+
+.vax-hero-vignette {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0.25) 0%,
+    rgba(0, 0, 0, 0.05) 35%,
+    rgba(0, 0, 0, 0.68) 76%,
+    #000000 100%
+  );
+}
+
+.vax-hero-center {
+  position: relative;
+  z-index: 5;
+  text-align: center;
+  padding: 0 24px 28px;
+  width: 100%;
+  max-width: 480px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.vax-hero-logo-title {
+  font-size: 32px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  line-height: 1.15;
+  margin-bottom: 8px;
+  background: linear-gradient(180deg, #ffffff 0%, #d4af7a 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 4px 14px rgba(0, 0, 0, 0.9));
+}
+
+.vax-hero-meta {
+  font-size: 12.5px;
+  color: rgba(255, 255, 255, 0.78);
+  margin-bottom: 16px;
+}
+
+.vax-watch-pill-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 13px 34px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: linear-gradient(180deg, #255b85 0%, #193e5c 100%);
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
+  transition: transform 0.15s ease, filter 0.15s ease;
+}
+
+.vax-watch-pill-btn:active {
+  transform: scale(0.96);
+  filter: brightness(1.15);
+}
+
+/* Khám Phá Thể Loại Colored Cards (Ảnh 8) */
+.vax-section {
+  margin-bottom: 24px;
+}
+
+.vax-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px 12px;
+}
+
+.vax-section-header h2 {
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+}
+
+.text-link-btn {
+  background: none;
+  border: none;
+  color: var(--ios-blue);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.genre-cards-scroll {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding: 0 16px;
+}
+
+.genre-color-card {
+  flex: 0 0 144px;
+  height: 76px;
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 10px;
+  font-size: 16px;
+  font-weight: 800;
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+.genre-color-card:active {
+  transform: scale(0.95);
+}
+
+.genre-color-0 { background: linear-gradient(145deg, #5b247a 0%, #3b1752 100%); border-color: rgba(168, 85, 247, 0.35); }
+.genre-color-1 { background: linear-gradient(145deg, #6b1d2f 0%, #48111e 100%); border-color: rgba(244, 63, 94, 0.35); }
+.genre-color-2 { background: linear-gradient(145deg, #634422 0%, #442e15 100%); border-color: rgba(245, 158, 11, 0.35); }
+.genre-color-3 { background: linear-gradient(145deg, #1b4d3e 0%, #103127 100%); border-color: rgba(16, 185, 129, 0.35); }
+.genre-color-4 { background: linear-gradient(145deg, #1e3a5f 0%, #12243d 100%); border-color: rgba(59, 130, 246, 0.35); }
+
+/* Horizontal Movie Poster Cards */
+.poster-horizontal-scroll {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding: 2px 16px 8px;
+}
+
+.vax-poster-card {
+  flex: 0 0 146px;
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  position: relative;
+}
+
+.vax-poster-img-box {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  border-radius: 16px;
+  overflow: hidden;
+  background: var(--ios-card);
+  border: 1px solid var(--ios-border);
+}
+
+.vax-poster-img-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.vax-poster-card:hover .vax-poster-img-box img {
+  transform: scale(1.04);
+}
+
+.poster-badge-tl {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: rgba(0, 0, 0, 0.72);
+  backdrop-filter: blur(8px);
+  color: #ffcc00;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 2px 7px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 204, 0, 0.3);
+}
+
+.poster-badge-br {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  background: rgba(0, 0, 0, 0.78);
+  backdrop-filter: blur(8px);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 6px;
+}
+
+.vax-poster-title {
+  font-size: 13.5px;
+  font-weight: 700;
+  margin-top: 7px;
+  color: var(--text-white);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.vax-poster-sub {
+  font-size: 11.5px;
+  color: var(--text-gray);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Grid Container for Categories & Search */
+.poster-grid-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  padding: 0 16px;
+}
+
+@media (min-width: 768px) {
+  .poster-grid-container {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 16px;
+  }
+}
+
+.poster-grid-container .vax-poster-card {
+  flex: none;
+  width: 100%;
+}
+
+/* =============================================================================
+   2. FLOATING GLASSMORPHISM BOTTOM DOCK + SEARCH FAB (ẢNH 1-8, 11)
+   ============================================================================= */
+.vax-bottom-dock-wrap {
+  position: fixed;
+  bottom: calc(14px + var(--safe-bottom));
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% - 28px);
+  max-width: 500px;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  pointer-events: none;
+}
+
+.vax-glass-pill-nav {
+  pointer-events: auto;
+  flex: 1;
+  height: 62px;
+  border-radius: 999px;
+  background: rgba(28, 28, 32, 0.78);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 5px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.65);
+}
+
+.dock-tab {
+  flex: 1;
+  height: 52px;
+  border-radius: 999px;
+  border: none;
+  background: transparent;
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  font-size: 10.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.dock-tab.active {
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--ios-blue);
+}
+
+.vax-glass-search-fab {
+  pointer-events: auto;
+  width: 62px;
+  height: 62px;
+  border-radius: 50%;
+  background: rgba(28, 28, 32, 0.78);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.65);
+  transition: transform 0.15s ease;
+}
+
+.vax-glass-search-fab:active {
+  transform: scale(0.92);
+}
+
+/* =============================================================================
+   3. MÀN HÌNH CÀI ĐẶT iOS (SETTINGS VIEW - ẢNH 2, 3, 5, 6)
+   ============================================================================= */
+.ios-nav-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: calc(20px + var(--safe-top)) 18px 12px;
+}
+
+.ios-large-title {
+  font-size: 32px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+
+.settings-scroll-body {
+  padding: 0 16px 32px;
+}
+
+.ios-group-label {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text-gray);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  margin: 22px 12px 8px;
+}
+
+.ios-group-footnote {
+  font-size: 12.5px;
+  color: var(--text-gray);
+  margin: 7px 12px 4px;
+  line-height: 1.45;
+}
+
+.ios-card {
+  background: var(--ios-card);
+  border-radius: 18px;
+  border: 1px solid var(--ios-border);
+  overflow: hidden;
+}
+
+.ios-divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.07);
+  margin-left: 16px;
+}
+
+.ios-list-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  gap: 12px;
+}
+
+.ios-list-row.clickable {
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.ios-list-row.clickable:active,
+.ios-list-row.clickable:hover {
+  background: var(--ios-card-elevated);
+}
+
+.row-left {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+}
+
+.row-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 17px;
+  flex-shrink: 0;
+}
+
+.row-icon.blue-puzzle { background: rgba(10, 132, 255, 0.16); color: var(--ios-blue); }
+.row-icon.green-folder { background: rgba(48, 209, 88, 0.16); color: var(--ios-green); }
+.row-icon.red-sparkle { background: rgba(255, 69, 58, 0.16); color: var(--ios-red); }
+.row-icon.blue-user { background: rgba(10, 132, 255, 0.16); color: var(--ios-blue); }
+.row-icon.purple-bg { background: rgba(191, 90, 242, 0.18); color: var(--ios-purple); }
+
+.row-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-white);
+}
+
+.row-subtitle {
+  font-size: 13px;
+  color: var(--text-gray);
+  margin-top: 2px;
+}
+
+.row-chevron {
+  font-size: 22px;
+  color: var(--text-gray);
+  font-weight: 400;
+}
+
+.row-value-blue {
+  color: var(--ios-blue);
+  font-size: 15.5px;
+  font-weight: 500;
+}
+
+.row-value-muted {
+  color: var(--text-gray);
+  font-size: 15.5px;
+}
+
+.text-blue { color: var(--ios-blue) !important; }
+.text-red { color: var(--ios-red) !important; }
+
+.ios-input-row {
+  display: flex;
+  align-items: center;
+  padding: 6px 16px;
+  gap: 10px;
+}
+
+.ios-inline-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--text-white);
+  font-size: 15.5px;
+  padding: 10px 0;
+  outline: none;
+}
+
+.ios-inline-input::placeholder {
+  color: #5c5c63;
+}
+
+.ios-inline-action-btn {
+  background: none;
+  border: none;
+  color: var(--text-gray);
+  font-size: 15.5px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 6px 8px;
+}
+
+.ios-inline-action-btn:hover {
+  color: var(--ios-blue);
+}
+
+.ai-text-gradient {
+  color: var(--ios-purple) !important;
+  font-weight: 700;
+}
+
+.ios-center-blue-btn {
+  width: 100%;
+  padding: 14px;
+  background: transparent;
+  border: none;
+  color: var(--ios-blue);
+  font-size: 16px;
+  font-weight: 500;
+  text-align: center;
+  cursor: pointer;
+}
+
+.ios-center-blue-btn:active {
+  background: var(--ios-card-elevated);
+}
+
+.red-pill-btn {
+  background: #e53935;
+  color: #ffffff;
+  border: none;
+  border-radius: 999px;
+  padding: 7px 14px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* AI Website-to-Plugin Card in Settings */
+.ai-converter-settings-card {
+  border-color: rgba(191, 90, 242, 0.35);
+  background: linear-gradient(145deg, rgba(191, 90, 242, 0.09) 0%, #141416 100%);
+}
+
+.ai-card-banner {
+  display: flex;
+  gap: 12px;
+  padding: 14px 16px 8px;
+}
+
+.sparkle-icon {
+  font-size: 22px;
+}
+
+.ai-card-title {
+  font-size: 15.5px;
+  font-weight: 700;
+  color: #f3e8ff;
+}
+
+.ai-card-sub {
+  font-size: 12.5px;
+  color: var(--text-light-gray);
+  margin-top: 2px;
+}
+
+/* iOS Toggle Switch (Ảnh 3, 6) */
+.ios-switch {
+  position: relative;
+  display: inline-block;
+  width: 51px;
+  height: 31px;
+}
+.ios-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.ios-slider {
+  position: absolute;
+  cursor: pointer;
+  inset: 0;
+  background-color: #39393d;
+  transition: 0.25s;
+  border-radius: 34px;
+}
+.ios-slider:before {
+  position: absolute;
+  content: "";
+  height: 27px;
+  width: 27px;
+  left: 2px;
+  bottom: 2px;
+  background-color: white;
+  transition: 0.25s;
+  border-radius: 50%;
+}
+input:checked + .ios-slider {
+  background-color: var(--ios-blue);
+}
+input:checked + .ios-slider:before {
+  transform: translateX(20px);
+}
+
+/* Floating iOS Popover Menu for DNS & Player (Ảnh 6) */
+.ios-popover-menu {
+  position: absolute;
+  right: 14px;
+  top: 48px;
+  z-index: 90;
+  width: 245px;
+  background: rgba(34, 34, 38, 0.94);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 16px;
+  padding: 6px 0;
+  box-shadow: 0 12px 34px rgba(0, 0, 0, 0.75);
+}
+
+.popover-item {
+  padding: 12px 18px;
+  font-size: 15px;
+  color: var(--text-white);
+  cursor: pointer;
+}
+
+.popover-item:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.popover-item.active {
+  font-weight: 700;
+  color: var(--ios-blue);
+}
+
+/* =============================================================================
+   4. MODAL CHỌN NGUỒN (SOURCE PICKER 2-COLUMN CARDS - ẢNH 7)
+   ============================================================================= */
+.ios-sheet-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 400;
+  background: rgba(0, 0, 0, 0.78);
+  backdrop-filter: blur(12px);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.ios-sheet-container {
+  width: 100%;
+  max-width: 540px;
+  height: 92vh;
+  background: #0c0c0e;
+  border-top-left-radius: 26px;
+  border-top-right-radius: 26px;
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding-bottom: var(--safe-bottom);
+}
+
+.ios-sheet-topbar,
+.ios-subpage-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 16px 12px;
+}
+
+.ios-subpage-title {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.ios-circle-back-btn,
+.ios-circle-icon-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(34, 34, 38, 0.85);
+  color: var(--ios-blue);
+  font-size: 20px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.sheet-search-box {
+  margin: 0 16px 12px;
+  padding: 10px 14px;
+  border-radius: 14px;
+  background: #18181b;
+  border: 1px solid var(--ios-border);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sheet-search-box input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 15px;
+  outline: none;
+}
+
+.sheet-filter-pills {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 0 16px 14px;
+}
+
+.s-pill {
+  padding: 7px 15px;
+  border-radius: 999px;
+  border: 1px solid var(--ios-border);
+  background: #18181b;
+  color: var(--text-light-gray);
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.s-pill.active {
+  background: var(--ios-blue);
+  border-color: var(--ios-blue);
+  color: #ffffff;
+}
+
+.source-cards-grid-2col {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 16px 24px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  align-content: start;
+}
+
+.source-grid-card {
+  background: #151518;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 12px;
+  cursor: pointer;
+  transition: transform 0.15s, border-color 0.15s;
+}
+
+.source-grid-card.active {
+  border-color: var(--ios-blue);
+  background: rgba(10, 132, 255, 0.12);
+}
+
+.source-grid-card:active {
+  transform: scale(0.97);
+}
+
+.sg-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sg-icon-box {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: #232329;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 800;
+  color: #fff;
+  overflow: hidden;
+}
+
+.sg-icon-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.sg-heart-btn {
+  background: none;
+  border: none;
+  color: var(--text-gray);
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.sg-heart-btn.liked {
+  color: var(--ios-red);
+}
+
+.sg-name {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sg-ver {
+  font-size: 12px;
+  color: var(--text-gray);
+  margin-top: 2px;
+}
+
+/* =============================================================================
+   5. SUBPAGES: KHO PLUGIN (ẢNH 4), AI MODEL (ẢNH 1) & CHI TIẾT PHIM (ẢNH 11)
+   ============================================================================= */
+.ios-subpage {
+  position: fixed;
+  inset: 0;
+  z-index: 150;
+  background: var(--ios-black);
+  overflow-y: auto;
+  padding-top: var(--safe-top);
+  padding-bottom: calc(105px + var(--safe-bottom));
+}
+
+.ios-subpage > * {
+  max-width: 540px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@media (min-width: 768px) {
+  .ios-subpage > * {
+    max-width: 780px;
+  }
+}
+
+/* Kho Plugin (Ảnh 4) */
+.repo-summary-card {
+  padding: 18px;
+}
+
+.repo-summary-title {
+  font-size: 19px;
+  font-weight: 800;
+}
+
+.repo-summary-sub {
+  font-size: 14px;
+  color: var(--text-gray);
+  margin-top: 4px;
+}
+
+.repo-summary-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding-top: 4px;
+}
+
+.repo-action-item {
+  background: none;
+  border: none;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.repo-action-item.green { color: var(--ios-green); }
+.repo-action-item.blue { color: var(--ios-blue); }
+.repo-action-item.red { color: var(--ios-red); }
+
+.repo-plugin-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.repo-plugin-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.repo-uninstall-btn {
+  background: rgba(255, 69, 58, 0.16);
+  color: var(--ios-red);
+  border: none;
+  border-radius: 10px;
+  padding: 7px 13px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* AI Model Center (Ảnh 1) */
+.ai-center-hero-box {
+  background: linear-gradient(135deg, rgba(120, 25, 38, 0.48) 0%, rgba(20, 24, 38, 0.85) 100%);
+  border: 1px solid rgba(255, 90, 95, 0.25);
+  border-radius: 20px;
+  padding: 18px;
+  margin-bottom: 20px;
+}
+
+.ai-center-hero-title {
+  font-size: 16.5px;
+  font-weight: 800;
+  color: #ffffff;
+  margin-bottom: 8px;
+}
+
+.ai-center-hero-desc {
+  font-size: 13.5px;
+  color: rgba(255, 255, 255, 0.82);
+  line-height: 1.5;
+}
+
+.ai-section-subtitle {
+  font-size: 18px;
+  font-weight: 800;
+  margin: 0 4px 12px;
+}
+
+.ai-feature-card {
+  background: var(--ios-card);
+  border: 1px solid var(--ios-border);
+  border-radius: 18px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.ai-feature-card:hover {
+  background: var(--ios-card-elevated);
+}
+
+.ai-feat-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.ai-feat-icon.blue-box { background: rgba(10, 132, 255, 0.18); color: #38bdf8; }
+.ai-feat-icon.red-box { background: rgba(255, 69, 58, 0.18); color: #f87171; }
+.ai-feat-icon.green-box { background: rgba(48, 209, 88, 0.18); color: #4ade80; }
+.ai-feat-icon.amber-box { background: rgba(255, 159, 10, 0.18); color: #fbbf24; }
+.ai-feat-icon.purple-box { background: rgba(191, 90, 242, 0.22); color: #e879f9; }
+
+.ai-feat-body {
+  flex: 1;
+}
+
+.ai-feat-title {
+  font-size: 15.5px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.ai-feat-desc {
+  font-size: 13px;
+  color: var(--text-gray);
+  margin-top: 4px;
+  line-height: 1.4;
+}
+
+.status-badge-green {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: rgba(48, 209, 88, 0.18);
+  color: #4ade80;
+}
+
+.status-badge-amber {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: rgba(255, 159, 10, 0.18);
+  color: #fbbf24;
+}
+
+/* AI Plugin Studio Subpage */
+.studio-url-bar {
+  display: flex;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.studio-input, .studio-select {
+  width: 100%;
+  padding: 11px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
+  font-size: 14px;
+  outline: none;
+}
+
+.studio-generate-btn {
+  padding: 0 18px;
+  border-radius: 12px;
+  border: none;
+  background: linear-gradient(135deg, #bf5af2, #0a84ff);
+  color: #fff;
+  font-weight: 800;
+  font-size: 14px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.quick-chip-list {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.q-chip {
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.06);
+  color: #e2e8f0;
+  font-size: 11.5px;
+  cursor: pointer;
+}
+
+.studio-terminal {
+  margin-top: 12px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.75);
+  font-family: monospace;
+  font-size: 11.5px;
+  color: #4ade80;
+  max-height: 150px;
+  overflow-y: auto;
+}
+
+.studio-form-row {
+  margin-bottom: 10px;
+}
+.studio-form-row label {
+  display: block;
+  font-size: 12.5px;
+  color: var(--text-gray);
+  margin-bottom: 4px;
+}
+
+.studio-code-textarea {
+  width: 100%;
+  height: 260px;
+  background: #08080a;
+  color: #e2e8f0;
+  border: 1px solid var(--ios-border);
+  border-radius: 12px;
+  padding: 12px;
+  font-family: Consolas, monospace;
+  font-size: 12px;
+  resize: vertical;
+  outline: none;
+}
+
+/* =============================================================================
+   6. CHI TIẾT PHIM (MOVIE DETAIL - GIỐNG HỆT ẢNH 11)
+   ============================================================================= */
+.detail-hero-top {
+  position: relative;
+  width: 100%;
+  height: 360px;
+  overflow: hidden;
+}
+
+.detail-backdrop-img {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center 20%;
+}
+
+.detail-backdrop-fade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0.25) 0%,
+    rgba(0, 0, 0, 0.4) 50%,
+    #000000 100%
+  );
+}
+
+.detail-back-pos {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  z-index: 10;
+}
+
+.detail-content-body {
+  padding: 0 18px 36px;
+  margin-top: -55px;
+  position: relative;
+  z-index: 5;
+}
+
+.detail-main-title {
+  text-align: center;
+  font-size: 27px;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.detail-meta-row {
+  text-align: center;
+  font-size: 14px;
+  color: var(--text-gray);
+  margin-bottom: 4px;
+}
+
+.hd-gold-tag {
+  color: #ff9f0a;
+  font-weight: 800;
+}
+
+.detail-genres-line {
+  text-align: center;
+  font-size: 13px;
+  color: var(--text-gray);
+  margin-bottom: 18px;
+}
+
+.detail-actions-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.detail-play-now-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 13px 36px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: linear-gradient(180deg, #255b85 0%, #183d5b 100%);
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.detail-circle-action-btn {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #1c1c1f;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.detail-synopsis {
+  font-size: 14.5px;
+  color: #c7c7cc;
+  line-height: 1.55;
+  margin-bottom: 22px;
+}
+
+.detail-servers-row {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  margin-bottom: 14px;
+}
+
+.detail-episodes-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.detail-episodes-header h3 {
+  font-size: 18px;
+  font-weight: 800;
+}
+
+/* 4-Column Rounded Episode Buttons Grid (Ảnh 11) */
+.detail-episodes-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+.detail-ep-pill {
+  padding: 13px 6px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: #222226;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 700;
+  text-align: center;
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.detail-ep-pill.active,
+.detail-ep-pill:hover {
+  background: var(--ios-steel-blue);
+  border-color: var(--ios-blue);
+}
+
+/* =============================================================================
+   7. TRÌNH PHÁT VIDEO CUSTOM VAX FULLSCREEN PLAYER (ẢNH 9, 10, 12, 13, 14)
+   ============================================================================= */
+.vax-player-fullscreen {
+  position: fixed;
+  inset: 0;
+  z-index: 900;
+  background: #000000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.vax-fs-video,
+.vax-fs-iframe {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border: none;
+  background: #000;
+}
+
+.ai-caption-overlay {
+  position: absolute;
+  bottom: 92px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 915;
+  background: rgba(0, 0, 0, 0.78);
+  backdrop-filter: blur(8px);
+  color: #fde047;
+  padding: 6px 18px;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 700;
+  text-align: center;
+  max-width: 85%;
+  pointer-events: none;
+}
+
+.player-controls-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 910;
+  background: rgba(0, 0, 0, 0.32);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 18px 24px 22px;
+  transition: opacity 0.25s ease;
+}
+
+.player-controls-layer.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.p-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.p-top-left,
+.p-top-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.p-glass-circle-btn {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: rgba(38, 38, 42, 0.72);
+  backdrop-filter: blur(18px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: #fff;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.p-glass-pill-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: rgba(38, 38, 42, 0.72);
+  backdrop-filter: blur(18px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.p-glass-icon-btn {
+  background: none;
+  border: none;
+  color: #fff;
+  padding: 5px 7px;
+  font-size: 15px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.p-movie-ep-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.9);
+  max-width: 260px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.p-volume-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: rgba(38, 38, 42, 0.72);
+  backdrop-filter: blur(18px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.p-volume-pill input[type="range"] {
+  width: 85px;
+  accent-color: #ffffff;
+}
+
+/* Upper-Middle 7 Icons Row (Ảnh 13, 14) */
+.p-action-icons-bar {
+  align-self: center;
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  margin-top: -12px;
+}
+
+.p-tool-btn {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.88);
+  cursor: pointer;
+  padding: 6px;
+  transition: transform 0.15s, color 0.15s;
+}
+
+.p-tool-btn:hover,
+.p-tool-btn.active {
+  color: var(--ios-blue);
+  transform: scale(1.12);
+}
+
+/* Center Play / Pause & ±10s Circles (Ảnh 13, 14) */
+.p-center-Transport {
+  align-self: center;
+  display: flex;
+  align-items: center;
+  gap: 44px;
+}
+
+.p-seek-circle-btn {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background: rgba(65, 70, 55, 0.65);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  color: #ffffff;
+  font-size: 13.5px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.p-main-play-circle {
+  width: 78px;
+  height: 78px;
+  border-radius: 50%;
+  background: rgba(75, 80, 65, 0.72);
+  backdrop-filter: blur(18px);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  color: #ffffff;
+  font-size: 26px;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+/* Bottom Area: Speed/AI Pill + Scrub Bar (Ảnh 13, 14) */
+.p-bottom-area {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.p-bottom-right-pills {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.p-scrub-pill {
+  width: 100%;
+  height: 46px;
+  border-radius: 999px;
+  background: rgba(34, 34, 38, 0.72);
+  backdrop-filter: blur(18px);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  padding: 0 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.p-time-text {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.85);
+  min-width: 44px;
+}
+
+.p-seek-slider {
+  flex: 1;
+  accent-color: #ffffff;
+  cursor: pointer;
+}
+
+/* Player Floating Glass Popovers (Ảnh 9, 10, 12, 13) */
+.p-floating-modal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 940;
+  width: 265px;
+  max-height: 78vh;
+  background: rgba(32, 36, 42, 0.9);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 24px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.8);
+}
+
+.p-floating-modal.p-speed-pos {
+  left: auto;
+  right: 28px;
+  transform: translateY(-50%);
+  width: 215px;
+}
+
+.p-modal-header {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text-light-gray);
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  margin-bottom: 8px;
+}
+
+.p-modal-sub {
+  font-size: 12px;
+  color: var(--text-gray);
+  margin: 4px 0;
+}
+
+.p-modal-scroll-list {
+  overflow-y: auto;
+  max-height: 220px;
+}
+
+.p-modal-item {
+  padding: 10px 8px;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 500;
+  color: #ffffff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.p-modal-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.p-modal-item.active {
+  font-weight: 700;
+  color: var(--ios-blue);
+}
+
+/* =============================================================================
+   UTILITIES, SEGMENTED CONTROL, SPINNER & TOAST
+   ============================================================================= */
+.source-mini-pill {
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--ios-border-light);
+  background: var(--ios-card);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.cat-chips-scroller {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 0 16px 16px;
+}
+
+.segmented-control {
+  display: inline-flex;
+  background: var(--ios-card);
+  border-radius: 10px;
+  padding: 3px;
+  border: 1px solid var(--ios-border);
+}
+
+.seg-btn {
+  padding: 6px 14px;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  color: var(--text-gray);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.seg-btn.active {
+  background: #2c2c30;
+  color: #fff;
+}
+
+.pagination-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 22px 16px;
+}
+
+.ios-btn-gray {
+  padding: 9px 16px;
+  border-radius: 12px;
+  border: 1px solid var(--ios-border-light);
+  background: var(--ios-card-elevated);
+  color: #fff;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.vax-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 16px;
+  gap: 10px;
+  color: var(--text-gray);
+  font-size: 13.5px;
+}
+
+.ios-spinner {
+  width: 28px;
+  height: 28px;
+  border: 2.5px solid rgba(255, 255, 255, 0.16);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.debug-console-box {
+  flex: 1;
+  overflow-y: auto;
+  padding: 14px;
+  font-family: monospace;
+  font-size: 11.5px;
+  color: #a7f3d0;
+}
+
+.toast-container {
+  position: fixed;
+  top: calc(18px + var(--safe-top));
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  pointer-events: none;
+}
+
+.toast-item {
+  background: rgba(28, 28, 32, 0.94);
+  backdrop-filter: blur(18px);
+  color: #fff;
+  padding: 10px 18px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+}
