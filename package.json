@@ -1,0 +1,14 @@
+{
+  "name": "vax-film-ai-platform",
+  "version": "1.0.0",
+  "description": "VAX Film Platform - Ad-free Movie Streaming App (Mobile IPA/APK + Web) with VAX Plugin Engine & AI Auto-Plugin Converter",
+  "main": "server/index.js",
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "node server/index.js",
+    "test": "node server/test-plugins.js"
+  },
+  "keywords": ["vax", "movie-streaming", "plugin-engine", "ai-converter", "hls", "react-native", "capacitor"],
+  "author": "VAX Studio",
+  "license": "MIT"
+}
