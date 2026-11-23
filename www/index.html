@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="VAX" />
+  <meta name="theme-color" content="#000000" />
+  <title>VAX 2.0.1 — Xem Phim 4K Không Quảng Cáo & AI Plugin Engine</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" type="image/svg+xml" href="icon.svg" />
+  <link rel="apple-touch-icon" href="icon.svg" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.15/dist/hls.min.js"></script>
+</head>
+<body>
+  <!-- TOAST NOTIFICATION -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <!-- HIDDEN FILE INPUTS -->
+  <input type="file" id="pluginFileInput" accept=".js,.txt,.json" style="display: none;" />
+  <input type="file" id="subtitleFileInput" accept=".vtt,.srt,.ass" style="display: none;" />
+
+  <!-- ======================================================================
+       MAIN APP SHELL
+       ====================================================================== -->
+  <div class="ios-app-shell">
+
+    <!-- ====================================================================
+         TAB 1: TRANG CHỦ (HOME VIEW - GIỐNG HỆT ẢNH 8)
+         ==================================================================== -->
+    <main id="view-home" class="ios-view active">
+      <!-- FLOATING SOURCE SELECTOR PILL ("Dexter ⌄") -->
+      <div class="top-floating-bar">
+        <button class="source-dropdown-pill" id="openSourcePickerBtn">
+          <span id="currentSourcePillName">Dexter</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </button>
+      </div>
+
+      <!-- FULL-BLEED HERO POSTER -->
+      <section class="vax-hero" id="vaxHeroSection">
+        <div class="vax-hero-bg" id="vaxHeroBg"></div>
+        <div class="vax-hero-vignette"></div>
+        <div class="vax-hero-center">
+          <h1 class="vax-hero-logo-title" id="vaxHeroTitle">Đang tải...</h1>
+          <div class="vax-hero-meta" id="vaxHeroMeta"></div>
+          <button class="vax-watch-pill-btn" id="vaxHeroWatchBtn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 4 20 12 6 20 6 4"></polygon></svg>
+            <span>Xem Phim</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- KHÁM PHÁ THỂ LOẠI (COLORED HORIZONTAL CARDS - ẢNH 8) -->
+      <section class="vax-section">
+        <div class="vax-section-header">
+          <h2>Khám Phá Thể Loại</h2>
+        </div>
+        <div class="genre-cards-scroll" id="homeGenreCardsRow"></div>
+      </section>
+
+      <!-- XEM TIẾP (CONTINUE WATCHING - ẢNH 8) -->
+      <section class="vax-section" id="homeContinueSection" style="display: none;">
+        <div class="vax-section-header">
+          <h2>Xem tiếp</h2>
+          <button class="text-link-btn" id="homeClearHistoryBtn">Xóa</button>
+        </div>
+        <div class="poster-horizontal-scroll" id="homeContinueRow"></div>
+      </section>
+
+      <!-- LOADING INDICATOR -->
+      <div id="homeLoading" class="vax-loading" style="display: none;">
+        <div class="ios-spinner"></div>
+        <span id="homeLoadingText">Đang đồng bộ dữ liệu...</span>
+      </div>
+
+      <!-- DYNAMIC PLUGIN SECTIONS -->
+      <div id="homeShelvesContainer"></div>
+    </main>
+
+    <!-- ====================================================================
+         TAB 2: THỂ LOẠI & DUYỆT PHIM (CATEGORIES & FILTER GRID VIEW)
+         ==================================================================== -->
+    <main id="view-categories" class="ios-view">
+      <div class="ios-nav-header">
+        <h1 class="ios-large-title">Thể loại</h1>
+        <button class="source-mini-pill" id="catSourceSwitchBtn">
+          <span id="catSourceName">Nguồn</span> ⌄
+        </button>
+      </div>
+
+      <div class="cat-chips-scroller" id="categoriesFilterRow"></div>
+
+      <div id="catLoading" class="vax-loading" style="display: none;">
+        <div class="ios-spinner"></div>
+        <span>Đang tải danh mục...</span>
+      </div>
+
+      <div class="poster-grid-container" id="categoriesMovieGrid"></div>
+
+      <div class="pagination-row" id="catPaginationBar" style="display: none;">
+        <button class="ios-btn-gray" id="catPrevPageBtn">❮ Trang trước</button>
+        <span id="catPageIndicator" class="page-badge">Trang 1</span>
+        <button class="ios-btn-gray" id="catNextPageBtn">Trang sau ❯</button>
+      </div>
+    </main>
+
+    <!-- ====================================================================
+         TAB 3: LỊCH SỬ & YÊU THÍCH (HISTORY & FAVORITES VIEW)
+         ==================================================================== -->
+    <main id="view-history" class="ios-view">
+      <div class="ios-nav-header">
+        <h1 class="ios-large-title">Lịch sử</h1>
+        <div class="segmented-control">
+          <button class="seg-btn active" id="segHistoryBtn">Đã xem</button>
+          <button class="seg-btn" id="segFavoritesBtn">Yêu thích</button>
+        </div>
+      </div>
+
+      <div id="historyTabContent">
+        <div class="poster-grid-container" id="historyMovieGrid"></div>
+      </div>
+      <div id="favoritesTabContent" style="display: none;">
+        <div class="poster-grid-container" id="favoritesMovieGrid"></div>
+      </div>
+    </main>
+
+    <!-- ====================================================================
+         TAB 4: CÀI ĐẶT HỆ THỐNG (SETTINGS VIEW - GIỐNG HỆT ẢNH 2, 3, 5, 6)
+         ==================================================================== -->
+    <main id="view-settings" class="ios-view">
+      <div class="ios-nav-header">
+        <h1 class="ios-large-title">Cài đặt</h1>
+      </div>
+
+      <div class="settings-scroll-body">
+        <!-- 1. TÍNH NĂNG MỚI YÊU CẦU: ĐIỀN LINK WEBSITE -> AI CONVERT PLUGIN -->
+        <div class="ios-group-label">✨ AI TỰ ĐỘNG TẠO PLUGIN TỪ LINK WEB</div>
+        <div class="ios-card ai-converter-settings-card">
+          <div class="ai-card-banner">
+            <span class="sparkle-icon">✨</span>
+            <div>
+              <div class="ai-card-title">Chuyển đổi Website thành Plugin VAX</div>
+              <div class="ai-card-sub">Điền bất kỳ link website xem phim nào, Server AI sẽ tự động phân tích cấu trúc dữ liệu và đóng gói thành Plugin chạy ngay trên app.</div>
+            </div>
+          </div>
+          <div class="ios-input-row">
+            <input type="url" id="quickWebsiteToPluginInput" class="ios-inline-input" placeholder="Dán link web phim (vd: https://rophim.me)..." />
+            <button class="ios-inline-action-btn ai-text-gradient" id="quickConvertWebBtn">Tạo Plugin</button>
+          </div>
+          <div class="ios-divider"></div>
+          <div class="ios-list-row clickable" id="openAiStudioFullBtn">
+            <div class="row-left">
+              <span class="row-icon purple-bg">⚡</span>
+              <div>
+                <div class="row-title">Mở AI Plugin Studio & Cấu hình Server AI</div>
+                <div class="row-subtitle" id="aiServerStatusSub">Tự động cào DOM/API, sửa code & test sandbox</div>
+              </div>
+            </div>
+            <span class="row-chevron">›</span>
+          </div>
+        </div>
+
+        <!-- 2. DANH SÁCH NGUỒN PLUGIN JSON (ẢNH 5) -->
+        <div class="ios-group-label">DANH SÁCH NGUỒN PLUGIN JSON</div>
+        <div class="ios-card">
+          <div id="jsonRepoListContainer">
+            <div class="ios-list-row">
+              <div class="row-left">
+                <span class="link-blue-icon">🔗</span>
+                <span class="row-title">williampro01</span>
+              </div>
+              <span class="badge-count">Mặc định</span>
+            </div>
+          </div>
+          <div class="ios-divider"></div>
+          <div class="ios-input-row">
+            <input type="url" id="newJsonRepoInput" class="ios-inline-input" placeholder="Dán link JSON nguồn mới hoặc link file .js..." />
+            <button class="ios-inline-action-btn" id="addJsonRepoBtn">Thêm</button>
+          </div>
+          <div class="ios-divider"></div>
+          <button class="ios-center-blue-btn" id="reloadAllSourcesBtn">Tải lại tất cả nguồn</button>
+          <div class="ios-divider"></div>
+
+          <div class="ios-list-row clickable" id="openPluginRepoSubpageBtn">
+            <div class="row-left">
+              <span class="row-icon blue-puzzle">🧩</span>
+              <div>
+                <div class="row-title">Quản lý kho plugin</div>
+                <div class="row-subtitle" id="installedPluginsCountLabel">15/15 plugin đã cài đặt</div>
+              </div>
+            </div>
+            <span class="row-chevron">›</span>
+          </div>
+
+          <div class="ios-divider"></div>
+          <div class="ios-list-row clickable" id="installFromLocalDeviceBtn">
+            <div class="row-left">
+              <span class="row-icon green-folder">📁</span>
+              <div>
+                <div class="row-title">Cài plugin từ bộ nhớ máy</div>
+                <div class="row-subtitle">Chọn file JavaScript (.js) để cài đặt trực tiếp</div>
+              </div>
+            </div>
+            <span class="row-chevron">›</span>
+          </div>
+        </div>
+        <div class="ios-group-footnote">Thêm hoặc xóa các link JSON chứa danh sách nguồn plugin, hoặc điền link website để AI tự tạo plugin.</div>
+
+        <!-- 3. MÁY CHỦ DNS (DoH & BYPASS DPI - ẢNH 5 & 6) -->
+        <div class="ios-group-label">MÁY CHỦ DNS (DoH & BYPASS DPI)</div>
+        <div class="ios-card" style="position: relative;">
+          <div class="ios-list-row clickable" id="dnsPickerTriggerRow">
+            <span class="row-title">DNS Provider</span>
+            <span class="row-value-blue" id="currentDnsLabel">Hệ thống (Mặc định) ⌄</span>
+          </div>
+          <!-- FLOATING POPOVER MENU (ẢNH 6) -->
+          <div id="dnsPopoverMenu" class="ios-popover-menu" style="display: none;">
+            <div class="popover-item active" data-dns="system">✓ Hệ thống (Mặc định)</div>
+            <div class="popover-item" data-dns="google">Google DNS (8.8.8.8)</div>
+            <div class="popover-item" data-dns="cloudflare">Cloudflare DNS (1.1.1.1)</div>
+            <div class="popover-item" data-dns="adguard">AdGuard DNS</div>
+            <div class="popover-item" data-dns="alidns">AliDNS</div>
+          </div>
+        </div>
+        <div class="ios-group-footnote">Chọn nhà cung cấp DNS DoH để giải mã tên miền và vượt rào cản chặn từ nhà mạng.</div>
+
+        <!-- 4. CẤU HÌNH PLUGIN ĐANG CHỌN (ẢNH 5) -->
+        <div class="ios-group-label" id="currentPluginConfigHeader">CẤU HÌNH: DEXTER</div>
+        <div class="ios-card">
+          <div class="ios-list-row">
+            <div>
+              <div class="row-title">Plugin đang chọn</div>
+              <div class="row-subtitle" id="currentPluginDomainLabel">Không có URL Base đăng nhập</div>
+            </div>
+            <button class="red-pill-btn" id="changePluginDomainBtn">🌐 Đổi Domain</button>
+          </div>
+        </div>
+
+        <!-- 5. BẢO MẬT & NỘI DUNG (ẢNH 3) -->
+        <div class="ios-group-label">BẢO MẬT & NỘI DUNG</div>
+        <div class="ios-card">
+          <div class="ios-list-row">
+            <div>
+              <div class="row-title">Nội dung 18+</div>
+              <div class="row-subtitle">Hiện/Ẩn các nguồn phim người lớn</div>
+            </div>
+            <label class="ios-switch">
+              <input type="checkbox" id="adultContentToggle" />
+              <span class="ios-slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <!-- 6. TRÌNH PHÁT VIDEO (ẢNH 3) -->
+        <div class="ios-group-label">TRÌNH PHÁT VIDEO</div>
+        <div class="ios-card" style="position: relative;">
+          <div class="ios-list-row clickable" id="playerTypePickerRow">
+            <span class="row-title">Trình phát mặc định</span>
+            <span class="row-value-blue" id="defaultPlayerLabel">Tự động ⌄</span>
+          </div>
+          <div id="playerPopoverMenu" class="ios-popover-menu" style="display: none;">
+            <div class="popover-item active" data-player="auto">✓ Tự động (VAX Native Player)</div>
+            <div class="popover-item" data-player="vlc">Mở bằng VLC</div>
+            <div class="popover-item" data-player="infuse">Mở bằng Infuse Pro (4K HDR)</div>
+          </div>
+        </div>
+        <div class="ios-group-footnote">VLC và Infuse cần được cài từ App Store. Infuse hỗ trợ tự động tải phụ đề tiếng Việt và hiển thị HDR/4K mượt mà nhất.</div>
+
+        <!-- 7. TRÍ TUỆ NHÂN TẠO (ẢNH 2 & 3) -->
+        <div class="ios-group-label">TRÍ TUỆ NHÂN TẠO</div>
+        <div class="ios-card">
+          <div class="ios-list-row clickable" id="openAiModelSubpageBtn">
+            <div class="row-left">
+              <span class="row-icon red-sparkle">✨</span>
+              <div>
+                <div class="row-title">AI Model</div>
+                <div class="row-subtitle">Dịch thuật, lồng tiếng và phụ đề AI</div>
+              </div>
+            </div>
+            <span class="row-chevron">›</span>
+          </div>
+        </div>
+
+        <!-- 8. TÀI KHOẢN (CLOUD SYNC - ẢNH 2) -->
+        <div class="ios-group-label">TÀI KHOẢN (CLOUD SYNC)</div>
+        <div class="ios-card">
+          <div class="ios-list-row clickable" id="googleSyncBtn">
+            <div class="row-left">
+              <span class="row-icon blue-user">👤</span>
+              <div>
+                <div class="row-title" id="cloudAccountTitle">Đăng nhập bằng Google</div>
+                <div class="row-subtitle" id="cloudAccountSub">Đồng bộ phim với bản Android (vaapp)</div>
+              </div>
+            </div>
+            <span class="row-chevron">›</span>
+          </div>
+        </div>
+        <div class="ios-group-footnote">Đăng nhập bằng Google để đồng bộ lịch sử xem và danh sách phim yêu thích xuyên suốt giữa Android và iOS.</div>
+
+        <!-- 9. THÔNG TIN (ẢNH 2) -->
+        <div class="ios-group-label">THÔNG TIN</div>
+        <div class="ios-card">
+          <div class="ios-list-row">
+            <span class="row-title">Phiên bản</span>
+            <span class="row-value-muted">2.0.1 (101)</span>
+          </div>
+          <div class="ios-divider"></div>
+          <div class="ios-list-row">
+            <span class="row-title">Nhà phát triển</span>
+            <span class="row-value-muted">VAX Team</span>
+          </div>
+          <div class="ios-divider"></div>
+          <div class="ios-list-row clickable" id="checkUpdateAppBtn">
+            <span class="row-title text-blue">Kiểm tra cập nhật App</span>
+            <span class="text-blue">🔄</span>
+          </div>
+          <div class="ios-divider"></div>
+          <div class="ios-list-row clickable" id="openDebugLogsBtn">
+            <span class="row-title text-blue">Nhật ký hệ thống (VAX Console Logs)</span>
+            <span class="text-blue">📟</span>
+          </div>
+        </div>
+
+        <!-- 10. QUẢN LÝ BỘ NHỚ (ẢNH 2) -->
+        <div class="ios-group-label">QUẢN LÝ BỘ NHỚ</div>
+        <div class="ios-card">
+          <div class="ios-list-row clickable" id="clearImageCacheBtn">
+            <span class="row-title text-blue">Xóa bộ nhớ đệm hình ảnh</span>
+            <span class="text-red">🗑️</span>
+          </div>
+          <div class="ios-divider"></div>
+          <div class="ios-list-row clickable" id="clearAllWatchHistoryBtn">
+            <span class="row-title text-blue">Xóa tất cả lịch sử xem</span>
+            <span class="text-red">🕘</span>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- ====================================================================
+         SUB-PAGE A: KHO PLUGIN (GIỐNG HỆT ẢNH 4)
+         ==================================================================== -->
+    <section id="subpage-plugin-repo" class="ios-subpage" style="display: none;">
+      <div class="ios-subpage-topbar">
+        <button class="ios-circle-back-btn" id="closePluginRepoSubpageBtn">‹</button>
+        <h2 class="ios-subpage-title">Kho Plugin</h2>
+        <button class="ios-circle-icon-btn" id="repoAddLocalFileBtn" title="Cài file .js từ máy">📄+</button>
+      </div>
+
+      <div class="settings-scroll-body">
+        <div class="ios-card repo-summary-card">
+          <div class="repo-summary-title" id="repoTotalPluginsText">Tổng số plugin: 15</div>
+          <div class="repo-summary-sub" id="repoInstalledPluginsText">Đã cài đặt: 15</div>
+          <div class="ios-divider" style="margin: 12px 0;"></div>
+          <div class="repo-summary-actions">
+            <button class="repo-action-item green" id="repoInstallMemoryBtn">📁 Cài từ bộ nhớ</button>
+            <button class="repo-action-item blue" id="repoDownloadAllBtn">⬇ Tải tất cả</button>
+            <button class="repo-action-item red" id="repoUninstallAllBtn">🗑️ Gỡ tất cả</button>
+          </div>
+        </div>
+
+        <div class="ios-group-footnote" style="margin-top: 10px;">Danh sách hiển thị chuẩn 100% theo thứ tự khai báo trong file JSON manifest.</div>
+        <div class="ios-group-label">DANH SÁCH PLUGIN</div>
+        <div class="ios-card" id="repoPluginListCard"></div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         SUB-PAGE B: AI MODEL - TRUNG TÂM CÔNG NGHỆ AI (GIỐNG HỆT ẢNH 1)
+         ==================================================================== -->
+    <section id="subpage-ai-model" class="ios-subpage" style="display: none;">
+      <div class="ios-subpage-topbar">
+        <button class="ios-circle-back-btn" id="closeAiModelSubpageBtn">‹</button>
+        <h2 class="ios-subpage-title">AI Model</h2>
+        <div style="width: 38px;"></div>
+      </div>
+
+      <div class="settings-scroll-body">
+        <div class="ai-center-hero-box">
+          <div class="ai-center-hero-title">✨ Trung tâm Công nghệ AI</div>
+          <div class="ai-center-hero-desc">
+            Hệ sinh thái AI toàn diện hỗ trợ dịch thuật tự động, lồng tiếng phụ đề, tạo phụ đề từ giọng nói, quét phụ đề video và <b>tự động chuyển đổi Website bất kỳ thành Plugin VAX</b>.
+          </div>
+        </div>
+
+        <h3 class="ai-section-subtitle">Tính năng AI thông minh</h3>
+
+        <!-- Card 1: Dịch phụ đề & Thông tin -->
+        <div class="ai-feature-card" id="aiFeatTranslateCard">
+          <div class="ai-feat-icon blue-box">文</div>
+          <div class="ai-feat-body">
+            <div class="ai-feat-title">Dịch phụ đề & Thông tin <span class="status-badge-green" id="aiTranslateStatusBadge">Đang bật</span></div>
+            <div class="ai-feat-desc">Tự động dịch thông tin phim và phụ đề rời ngoại ngữ sang tiếng Việt</div>
+          </div>
+          <span class="row-chevron">›</span>
+        </div>
+
+        <!-- Card 2: Lồng tiếng phụ đề (VAX TTS) -->
+        <div class="ai-feature-card" id="aiFeatTtsCard">
+          <div class="ai-feat-icon red-box">ılı</div>
+          <div class="ai-feat-body">
+            <div class="ai-feat-title">Lồng tiếng phụ đề (VAX TTS) <span class="status-badge-green" id="aiTtsStatusBadge">Sẵn sàng</span></div>
+            <div class="ai-feat-desc">Thuyết minh AI với kho giọng đọc VAX TTS thông minh trực tiếp trên máy</div>
+          </div>
+          <span class="row-chevron">›</span>
+        </div>
+
+        <!-- Card 3: Tạo phụ đề từ giọng nói -->
+        <div class="ai-feature-card" id="aiFeatSttCard">
+          <div class="ai-feat-icon green-box">💬</div>
+          <div class="ai-feat-body">
+            <div class="ai-feat-title">Tạo phụ đề từ giọng nói <span class="status-badge-green">Sẵn sàng</span></div>
+            <div class="ai-feat-desc">Nhận dạng giọng nói phim RAW thành phụ đề khi không có phụ đề hoặc đã tắt phụ đề</div>
+          </div>
+          <span class="row-chevron">›</span>
+        </div>
+
+        <!-- Card 4: Quét phụ đề video -->
+        <div class="ai-feature-card" id="aiFeatOcrCard">
+          <div class="ai-feat-icon amber-box">⛶</div>
+          <div class="ai-feat-body">
+            <div class="ai-feat-title">Quét phụ đề video <span class="status-badge-amber">Đang phát triển</span></div>
+            <div class="ai-feat-desc">Quét chữ phụ đề in sẵn trên video khi không có phụ đề rời hoặc đã tắt phụ đề</div>
+          </div>
+          <span class="row-chevron">›</span>
+        </div>
+
+        <!-- Card 5: AI Website -> Plugin Converter Studio -->
+        <div class="ai-feature-card" id="aiFeatConverterCard" style="border-color: rgba(139, 92, 246, 0.45);">
+          <div class="ai-feat-icon purple-box">⚡</div>
+          <div class="ai-feat-body">
+            <div class="ai-feat-title">AI Tạo Plugin Từ Link Website <span class="status-badge-green">Hoạt động</span></div>
+            <div class="ai-feat-desc">Điền link website xem phim bất kỳ để Server AI tự động phân tích DOM/API và sinh Plugin chạy trên app</div>
+          </div>
+          <span class="row-chevron">›</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         SUB-PAGE C: AI PLUGIN STUDIO & CẤU HÌNH SERVER AI
+         ==================================================================== -->
+    <section id="subpage-ai-studio" class="ios-subpage" style="display: none;">
+      <div class="ios-subpage-topbar">
+        <button class="ios-circle-back-btn" id="closeAiStudioSubpageBtn">‹</button>
+        <h2 class="ios-subpage-title">AI Plugin Studio</h2>
+        <button class="ios-circle-icon-btn" id="studioSavePluginTopBtn" title="Cài vào App">💾</button>
+      </div>
+
+      <div class="settings-scroll-body">
+        <div class="ai-center-hero-box">
+          <div class="ai-center-hero-title">🌐 Tự Động Convert Website -> Plugin VAX</div>
+          <div class="ai-center-hero-desc">
+            Nhập địa chỉ website xem phim bạn muốn thêm vào App. Hệ thống sẽ cào cấu trúc HTML/JSON, phát hiện danh mục, danh sách phim, link phát `.m3u8`/Embed và tạo Plugin chuẩn VAX.
+          </div>
+
+          <div class="studio-url-bar">
+            <input type="url" id="studioTargetUrlInput" class="studio-input" placeholder="https://rophim.me, https://motchilltv.me, https://kkphim.vip..." />
+            <button class="studio-generate-btn" id="studioRunConvertBtn">⚡ Convert</button>
+          </div>
+
+          <div class="quick-chip-list">
+            <button class="q-chip" data-url="https://phimmoichill.net">phimmoichill.net</button>
+            <button class="q-chip" data-url="https://motchilltv.me">motchilltv.me</button>
+            <button class="q-chip" data-url="https://kkphim.vip">kkphim.vip</button>
+            <button class="q-chip" data-url="https://ophim17.cc">ophim17.cc</button>
+            <button class="q-chip" data-url="https://animevietsub.fan">animevietsub.fan</button>
+          </div>
+
+          <div id="studioTerminalBox" class="studio-terminal" style="display: none;"></div>
+        </div>
+
+        <!-- CẤU HÌNH SERVER AI CỦA BẠN -->
+        <div class="ios-group-label">CẤU HÌNH SERVER AI & PROXY</div>
+        <div class="ios-card" style="padding: 14px;">
+          <div class="studio-form-row">
+            <label>Nguồn AI Server:</label>
+            <select id="studioAiProviderSelect" class="studio-select">
+              <option value="gemini">Google Gemini API (gemini-2.5-flash / pro)</option>
+              <option value="openai">OpenAI / Compatible (GPT-4o / DeepSeek / Groq)</option>
+              <option value="custom">Server AI riêng của bạn (Custom Endpoint)</option>
+              <option value="heuristic">VAX Neural Heuristic (Tự động 100% không cần Key)</option>
+            </select>
+          </div>
+          <div class="studio-form-row">
+            <label>API Key (Gemini / OpenAI / Token):</label>
+            <input type="password" id="studioAiKeyInput" class="studio-input" placeholder="Điền API Key (Để trống sẽ dùng VAX Heuristic Engine)" />
+          </div>
+          <div class="studio-form-row">
+            <label>Endpoint Server AI riêng / CORS Proxy:</label>
+            <input type="url" id="studioCustomServerInput" class="studio-input" placeholder="Ví dụ: http://localhost:8787/proxy?url={url}" />
+          </div>
+          <button class="ios-center-blue-btn" id="studioSaveAiConfigBtn" style="margin-top: 6px;">Lưu cấu hình Server AI</button>
+        </div>
+
+        <!-- TRÌNH SOẠN THẢO CODE & TEST SANDBOX -->
+        <div class="ios-group-label">MÃ NGUỒN PLUGIN ĐƯỢC TẠO</div>
+        <div class="ios-card" style="padding: 12px;">
+          <div style="display: flex; gap: 8px; margin-bottom: 10px;">
+            <button class="ios-btn-gray" id="studioTestPluginBtn" style="flex: 1;">▶ Chạy Thử (Test Sandbox)</button>
+            <button class="vax-watch-pill-btn" id="studioInstallPluginBtn" style="flex: 1; height: 38px; font-size: 13px;">💾 Cài Đặt Vào App</button>
+          </div>
+          <textarea id="studioCodeEditor" class="studio-code-textarea" spellcheck="false" placeholder="// Mã nguồn Plugin VAX sau khi AI convert sẽ hiển thị ở đây..."></textarea>
+        </div>
+
+        <div id="studioSandboxPreviewBox" style="margin-top: 14px;"></div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         SUB-PAGE D: CHI TIẾT PHIM (MOVIE DETAIL - GIỐNG HỆT ẢNH 11)
+         ==================================================================== -->
+    <section id="subpage-movie-detail" class="ios-subpage" style="display: none;">
+      <div class="detail-hero-top">
+        <div class="detail-backdrop-img" id="detailBackdropImg"></div>
+        <div class="detail-backdrop-fade"></div>
+        <button class="ios-circle-back-btn detail-back-pos" id="closeMovieDetailBtn">‹</button>
+      </div>
+
+      <div class="detail-content-body">
+        <h1 class="detail-main-title" id="detailMovieTitle">Đang tải...</h1>
+        <div class="detail-meta-row" id="detailMetaLine">
+          <span>2026</span> • <span class="hd-gold-tag">HD</span> • <span>Hoàn Tất</span>
+        </div>
+        <div class="detail-genres-line" id="detailGenresLine"></div>
+
+        <!-- ACTION BUTTONS ROW (ẢNH 11: [▶ Xem Ngay] [♡] [+]) -->
+        <div class="detail-actions-row">
+          <button class="detail-play-now-btn" id="detailPlayNowBtn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 4 20 12 6 20 6 4"></polygon></svg>
+            <span>Xem Ngay</span>
+          </button>
+          <button class="detail-circle-action-btn" id="detailFavToggleBtn" title="Yêu thích">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+            </svg>
+          </button>
+          <button class="detail-circle-action-btn" id="detailExternalPlayerBtn" title="Copy link hoặc mở VLC/Infuse">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+          </button>
+        </div>
+
+        <p class="detail-synopsis" id="detailSynopsisText"></p>
+
+        <!-- SERVER SELECTOR PILLS (IF MULTIPLE SERVERS) -->
+        <div class="detail-servers-row" id="detailServersRow"></div>
+
+        <!-- DANH SÁCH TẬP (4-COLUMN GRID GIỐNG HỆT ẢNH 11) -->
+        <div class="detail-episodes-header">
+          <h3>Danh sách tập</h3>
+          <span id="detailEpCountLabel" class="text-muted"></span>
+        </div>
+        <div class="detail-episodes-grid" id="detailEpisodesGrid"></div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         FLOATING GLASSMORPHISM BOTTOM BAR + SEARCH BUTTON (GIỐNG HỆT ẢNH 1-8)
+         ==================================================================== -->
+    <div class="vax-bottom-dock-wrap">
+      <nav class="vax-glass-pill-nav">
+        <button class="dock-tab active" data-view="view-home">
+          <svg width="21" height="21" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 3L4 9v12h5v-7h6v7h5V9z"/>
+          </svg>
+          <span>Trang chủ</span>
+        </button>
+        <button class="dock-tab" data-view="view-categories">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+            <rect x="3" y="3" width="7" height="7" rx="1.5"/>
+            <rect x="14" y="3" width="7" height="7" rx="1.5"/>
+            <rect x="3" y="14" width="7" height="7" rx="1.5"/>
+            <rect x="14" y="14" width="7" height="7" rx="1.5"/>
+          </svg>
+          <span>Thể loại</span>
+        </button>
+        <button class="dock-tab" data-view="view-history">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <circle cx="12" cy="12" r="9"/>
+            <polyline points="12 7 12 12 15 15"/>
+          </svg>
+          <span>Lịch sử</span>
+        </button>
+        <button class="dock-tab" data-view="view-settings">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+          </svg>
+          <span>Cài đặt</span>
+        </button>
+      </nav>
+
+      <!-- SEPARATE CIRCULAR SEARCH BUTTON ON THE RIGHT -->
+      <button class="vax-glass-search-fab" id="openSearchModalBtn" title="Tìm kiếm phim">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
+          <circle cx="11" cy="11" r="7.5"></circle>
+          <line x1="21" y1="21" x2="16.2" y2="16.2"></line>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       MODAL 1: CHỌN NGUỒN (SOURCE PICKER SHEET - GIỐNG HỆT ẢNH 7)
+       ====================================================================== -->
+  <div id="sourcePickerModal" class="ios-sheet-overlay" style="display: none;">
+    <div class="ios-sheet-container">
+      <div class="ios-sheet-topbar">
+        <button class="ios-circle-back-btn" id="closeSourcePickerBtn">✕</button>
+        <h2 class="ios-subpage-title">Chọn nguồn</h2>
+        <button class="ios-circle-icon-btn" id="sourcePickerAddAiBtn" title="Điền link web tạo Plugin bằng AI">📄+</button>
+      </div>
+
+      <!-- SEARCH INPUT -->
+      <div class="sheet-search-box">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8e8e93" stroke-width="2">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input type="text" id="sourceFilterInput" placeholder="Tìm kiếm nguồn (tên, ID)..." />
+      </div>
+
+      <!-- FILTER TABS: [Tất cả] [♥ Yêu thích] [🎬 Movie] [📱 Phim ngắn] [✨ AI tạo] -->
+      <div class="sheet-filter-pills" id="sourceTypeFilterPills">
+        <button class="s-pill active" data-filter="all">Tất cả</button>
+        <button class="s-pill" data-filter="fav">♥ Yêu thích</button>
+        <button class="s-pill" data-filter="movie">🎬 Movie</button>
+        <button class="s-pill" data-filter="short">📱 Phim ngắn</button>
+        <button class="s-pill" data-filter="ai">✨ AI tạo</button>
+      </div>
+
+      <!-- 2-COLUMN SOURCE CARDS GRID (ẢNH 7) -->
+      <div class="source-cards-grid-2col" id="sourcePickerGrid"></div>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       MODAL 2: TÌM KIẾM PHIM ĐA NGUỒN (SEARCH OVERLAY)
+       ====================================================================== -->
+  <div id="searchModal" class="ios-sheet-overlay" style="display: none;">
+    <div class="ios-sheet-container">
+      <div class="ios-sheet-topbar">
+        <button class="ios-circle-back-btn" id="closeSearchModalBtn">✕</button>
+        <h2 class="ios-subpage-title">Tìm kiếm phim</h2>
+        <div style="width: 38px;"></div>
+      </div>
+
+      <div class="sheet-search-box" style="margin-bottom: 10px;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8e8e93" stroke-width="2">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input type="text" id="globalMovieSearchInput" placeholder="Nhập tên phim cần tìm..." />
+        <button class="ios-inline-action-btn" id="runGlobalSearchBtn">Tìm</button>
+      </div>
+
+      <div style="padding: 0 16px 12px; display: flex; align-items: center; justify-content: space-between;">
+        <label class="checkbox-inline">
+          <input type="checkbox" id="multiPluginSearchCheckbox" />
+          <span>Tìm đồng thời trên tất cả nguồn plugin</span>
+        </label>
+      </div>
+
+      <div id="searchModalLoading" class="vax-loading" style="display: none;">
+        <div class="ios-spinner"></div>
+        <span>Đang tìm kiếm...</span>
+      </div>
+
+      <div class="poster-grid-container" id="searchModalResultsGrid" style="overflow-y: auto; flex: 1;"></div>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       MODAL 3: TRÌNH PHÁT VIDEO FULLSCREEN CUSTOM VAX PLAYER
+       (GIỐNG HỆT ẢNH 9, 10, 12, 13, 14)
+       ====================================================================== -->
+  <div id="fullscreenPlayerModal" class="vax-player-fullscreen" style="display: none;">
+    <!-- VIDEO & EMBED CONTAINER -->
+    <video id="vaxNativeVideo" class="vax-fs-video" playsinline webkit-playsinline crossorigin="anonymous"></video>
+    <iframe id="vaxEmbedIframe" class="vax-fs-iframe" allowfullscreen allow="autoplay; fullscreen; encrypted-media" style="display: none;"></iframe>
+
+    <!-- AI SUBTITLE / TTS LIVE CAPTION OVERLAY -->
+    <div id="aiSubtitleCaptionOverlay" class="ai-caption-overlay" style="display: none;"></div>
+
+    <!-- CUSTOM VAX GLASS OVERLAY CONTROLS (ẢNH 13, 14) -->
+    <div id="playerControlsLayer" class="player-controls-layer">
+      <!-- TOP BAR: LEFT [✕] [PiP | AirPlay] — RIGHT [Volume Slider | Mute] -->
+      <div class="p-top-row">
+        <div class="p-top-left">
+          <button class="p-glass-circle-btn" id="playerCloseBtn" title="Đóng trình phát">✕</button>
+          <div class="p-glass-pill-group">
+            <button class="p-glass-icon-btn" id="playerPipBtn" title="Hình trong hình (PiP)">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="2" y="3" width="20" height="14" rx="2"/>
+                <rect x="12" y="9" width="8" height="6" rx="1" fill="currentColor"/>
+              </svg>
+            </button>
+            <button class="p-glass-icon-btn" id="playerCastBtn" title="Truyền màn hình / Copy Stream URL">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M5 17H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-1"/>
+                <polygon points="12 15 17 21 7 21 12 15" fill="currentColor"/>
+              </svg>
+            </button>
+          </div>
+          <span class="p-movie-ep-title" id="playerNowPlayingTitle"></span>
+        </div>
+
+        <div class="p-top-right">
+          <div class="p-volume-pill">
+            <input type="range" id="playerVolumeSlider" min="0" max="1" step="0.05" value="1" />
+            <button class="p-glass-icon-btn" id="playerMuteBtn">🔊</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- UPPER-MIDDLE TOOLBAR: [123 Tập] [⏭ Tập tiếp] [🔓 Khóa] [🔄 Xoay] [💬 Phụ đề] [🔊 Audio] [⚙️ Cài đặt] (ẢNH 13, 14) -->
+      <div class="p-action-icons-bar" id="playerUpperToolbar">
+        <button class="p-tool-btn" id="pToolEpisodesBtn" title="Chọn tập phim">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/>
+            <line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/>
+          </svg>
+        </button>
+        <button class="p-tool-btn" id="pToolNextEpBtn" title="Tập tiếp theo">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+            <polygon points="5 4 15 12 5 20 5 4"/><line x1="19" y1="5" x2="19" y2="19" stroke="currentColor" stroke-width="2.5"/>
+          </svg>
+        </button>
+        <button class="p-tool-btn" id="pToolLockBtn" title="Khóa màn hình">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/>
+          </svg>
+        </button>
+        <button class="p-tool-btn" id="pToolRotateBtn" title="Tỷ lệ khung hình / Xoay">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/>
+            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+          </svg>
+        </button>
+        <button class="p-tool-btn" id="pToolSubtitlesBtn" title="Chọn phụ đề & Phụ đề AI">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+            <line x1="7" y1="9" x2="17" y2="9"/><line x1="7" y1="13" x2="13" y2="13"/>
+          </svg>
+        </button>
+        <button class="p-tool-btn" id="pToolAudioTtsBtn" title="Lồng tiếng Thuyết minh AI (VAX TTS)">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>
+          </svg>
+        </button>
+        <button class="p-tool-btn" id="pToolSettingsBtn" title="Chất lượng & Tính năng AI">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- CENTER PLAY / PAUSE & ±10s GLASS CIRCLES (ẢNH 13, 14) -->
+      <div class="p-center-Transport" id="playerCenterTransport">
+        <button class="p-seek-circle-btn" id="playerRewind10Btn">
+          <span class="seek-num">↺ 10</span>
+        </button>
+        <button class="p-main-play-circle" id="playerPlayPauseBtn">
+          <span id="playerPlayPauseIcon">❚❚</span>
+        </button>
+        <button class="p-seek-circle-btn" id="playerForward10Btn">
+          <span class="seek-num">10 ↻</span>
+        </button>
+      </div>
+
+      <!-- BOTTOM RIGHT FLOATING PILL: [Tốc độ ⏱️ | Lồng tiếng AI ılı] & SEEKBAR (ẢNH 13, 14) -->
+      <div class="p-bottom-area">
+        <div class="p-bottom-right-pills">
+          <div class="p-glass-pill-group">
+            <button class="p-glass-icon-btn" id="playerSpeedBtn" title="Tốc độ phát (Playback Speed)">⏱️ <span id="currentSpeedText" style="font-size:11px;margin-left:3px;">1x</span></button>
+            <button class="p-glass-icon-btn" id="playerQuickAiVoiceBtn" title="Bật/Tắt Thuyết minh AI">ılı</button>
+          </div>
+        </div>
+
+        <div class="p-scrub-pill">
+          <span class="p-time-text" id="playerCurrentTime">00:00</span>
+          <input type="range" id="playerSeekSlider" class="p-seek-slider" min="0" max="100" value="0" step="0.1" />
+          <span class="p-time-text" id="playerRemainingTime">-00:00</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================================================================
+         PLAYER POPOVER 1: CHỌN TẬP PHIM (GIỐNG HỆT ẢNH 9)
+         ================================================================== -->
+    <div id="playerPopupEpisodes" class="p-floating-modal" style="display: none;">
+      <div class="p-modal-header">Chọn tập phim</div>
+      <div class="p-modal-sub">Điều hướng</div>
+      <div class="p-modal-item" id="popupNextEpisodeAction">⏭ Tập tiếp theo</div>
+      <div class="ios-divider" style="margin: 6px 0;"></div>
+      <div class="p-modal-scroll-list" id="popupEpisodesList"></div>
+    </div>
+
+    <!-- ==================================================================
+         PLAYER POPOVER 2: CÀI ĐẶT CHẤT LƯỢNG & TÍNH NĂNG AI (GIỐNG HỆT ẢNH 10)
+         ================================================================== -->
+    <div id="playerPopupSettings" class="p-floating-modal" style="display: none;">
+      <div class="p-modal-header">Cài đặt</div>
+      <div class="p-modal-sub">Chất lượng video</div>
+      <div id="popupQualityList">
+        <div class="p-modal-item active">✓ Gốc (1080p / 4K)</div>
+      </div>
+      <div class="ios-divider" style="margin: 8px 0;"></div>
+      <div class="p-modal-sub">Tính năng AI</div>
+      <div class="p-modal-item" id="popupToggleAiTranslate">
+        <span id="checkAiTrans">✓</span> 🌐 Dịch phụ đề AI
+      </div>
+      <div class="p-modal-item" id="popupToggleAiDubbing">
+        <span id="checkAiDub"> </span> ılı Thuyết minh AI (VAX TTS)
+      </div>
+    </div>
+
+    <!-- ==================================================================
+         PLAYER POPOVER 3: CHỌN PHỤ ĐỀ (GIỐNG HỆT ẢNH 12)
+         ================================================================== -->
+    <div id="playerPopupSubtitles" class="p-floating-modal" style="display: none;">
+      <div class="p-modal-header">Chọn Phụ Đề</div>
+      <div id="popupSubtitleTracksList">
+        <div class="p-modal-item text-red" data-sub="off">✓ Tắt phụ đề</div>
+      </div>
+      <div class="p-modal-item" id="popupEnableAiSubBtn">🎙️ Phụ đề AI (Tự nhận diện)</div>
+      <div class="p-modal-item" id="popupAiLangBtn">🌐 Ngôn ngữ thoại AI: Tiếng Việt ›</div>
+      <div class="p-modal-item" id="popupImportSubFileBtn">📄+ Thêm phụ đề (.vtt / .srt)</div>
+    </div>
+
+    <!-- ==================================================================
+         PLAYER POPOVER 4: PLAYBACK SPEED (GIỐNG HỆT ẢNH 13)
+         ================================================================== -->
+    <div id="playerPopupSpeed" class="p-floating-modal p-speed-pos" style="display: none;">
+      <div class="p-modal-header">Playback Speed</div>
+      <div class="p-modal-item" data-speed="2">2×</div>
+      <div class="p-modal-item" data-speed="1.5">1,5×</div>
+      <div class="p-modal-item" data-speed="1.25">1,25×</div>
+      <div class="p-modal-item active" data-speed="1">✓ 1×</div>
+      <div class="p-modal-item" data-speed="0.5">0,5×</div>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       MODAL 4: VAX RUNTIME CONSOLE LOGS
+       ====================================================================== -->
+  <div id="debugConsoleModal" class="ios-sheet-overlay" style="display: none;">
+    <div class="ios-sheet-container">
+      <div class="ios-sheet-topbar">
+        <button class="ios-circle-back-btn" id="closeDebugConsoleBtn">✕</button>
+        <h2 class="ios-subpage-title">VAX Console Logs</h2>
+        <button class="ios-circle-icon-btn" id="clearDebugConsoleBtn">🗑️</button>
+      </div>
+      <div id="debugConsoleOutput" class="debug-console-box"></div>
+    </div>
+  </div>
+
+  <!-- SCRIPTS -->
+  <script src="js/vax-runtime.js"></script>
+  <script src="js/plugins-bundle-1.js"></script>
+  <script src="js/plugins-bundle-2.js"></script>
+  <script src="js/ai-converter.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
